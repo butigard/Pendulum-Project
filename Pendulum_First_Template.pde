@@ -1,3 +1,4 @@
+/*
 PVector origin;
 PVector bob;
 float len;
@@ -29,5 +30,6 @@ void draw() {
   angle += aVel;
   aVel += aAcc;
   
-  aVel *= 0.97;
+  aVel *= 0.99;
 }
+*/

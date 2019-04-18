@@ -8,7 +8,7 @@ float a1_v = 0;
 float a2_v = 0;
 float a1_a = 0;
 float a2_a = 0;
-float gravity = 0.5;
+float gravity = .001;
 float damp = 0.999;
 
 float px2 = -1;
@@ -32,14 +32,14 @@ void setup() {
   canvas.background(255);
   canvas.endDraw();
   
-  frameRate(240);
+  frameRate(120);
 }
 
 void draw() {
   
   // equations for angular acceleration of both pendulums
-  //a1_a = (-1 * gravity * (2 * (m1 + m2)) * sin(a1) - m2 * gravity * sin(a1 - (2 * a2)) - 2 * sin(a1 - a2) * m2 * (pow(a2_v,2) * r2 + pow(a1_v,2) * r1 * cos(a1 - a2))) / (r1 * (2 * m1 + m2 - m2 * cos(2 * a1 - 2 * a2)));
-  //a2_a = (2 * sin(a1 - a2) * (pow(a1_v,2) * r1 * (m1 + m2) + gravity * (m1 + m2) * cos(a1) + pow(a2_v,2) * r2 * m2 * cos(a1-a2))) / (r2 * (2 * m1 + m2 - m2 * cos(2 * a1 - 2 * a2)));
+  a1_a = (-1 * gravity * (2 * (m1 + m2)) * sin(a1) - m2 * gravity * sin(a1 - (2 * a2)) - 2 * sin(a1 - a2) * m2 * (pow(a2_v,2) * r2 + pow(a1_v,2) * r1 * cos(a1 - a2))) / (r1 * (2 * m1 + m2 - m2 * cos(2 * a1 - 2 * a2)));
+  a2_a = (2 * sin(a1 - a2) * (pow(a1_v,2) * r1 * (m1 + m2) + gravity * (m1 + m2) * cos(a1) + pow(a2_v,2) * r2 * m2 * cos(a1-a2))) / (r2 * (2 * m1 + m2 - m2 * cos(2 * a1 - 2 * a2)));
   
   
   
@@ -69,8 +69,8 @@ void draw() {
   ellipse(x2,y2,m2,m2);
   
   // updates angular velocity and position *ORDER IMPORTANT*
-  //a2_v += a2_a;
-  //a1_v += a1_a;
+  a2_v += a2_a;
+  a1_v += a1_a;
   a2 += a2_v;
   a1 += a1_v;
   

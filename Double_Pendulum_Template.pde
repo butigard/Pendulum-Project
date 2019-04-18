@@ -1,13 +1,15 @@
 float r1 = 200;
 float r2 = 200;
 float m1 = 40;
-float m2 = 40;
-float a1 = 0;
-float a2 = 0;
-float a1_v = 0;
-float a2_v = 0;
-float a1_a = 0.001;
-float a2_a = -0.003;
+float m2 = 60;
+double a1 = 0;
+double a2 = PI - 0.0001;
+double a1_v = 0;
+double a2_v = 0;
+double a1_a = 0;
+double a2_a = 0;
+float gravity = 0.13;
+float damp = 0.998;
 
 PGraphics canvas;
 
@@ -49,6 +51,13 @@ void draw() {
   a1_v += a1_a;
   a2_v += a2_a;
   
+  
+  a1_a = (-1 * gravity * (2 * (m1 + m2)) * sin(a1) - m2 * gravity * sin(a1 - (2 * a2)) - 2 * sin(a1 - a2) * m2 * (pow(a2_v,2) * r2 + pow(a1_v,2) * r1 * cos(a1 - a2))) / (r1 * (2 * m1 + m2 - m2 * cos(2 * a1 - 2 * a2)));
+  a2_a = (2 * sin(a1 - a2) * (pow(a1_v,2) * r1 * (m1 + m2) + gravity * (m1 + m2) * cos(a1) + pow(a2_v,2) * r2 * m2 * cos(a1-a2))) / (r2 * (2 * m1 + m2 - m2 * cos(2 * a1 - 2 * a2)));
+  //a1_v *= damp;
+  //a2_v *= damp;
+  
+  print(a1_a, "  --------  ", a2_a, "\n");
   
   canvas.beginDraw();
   canvas.translate(300, 50);

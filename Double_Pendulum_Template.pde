@@ -76,9 +76,11 @@ void draw() {
   
   
   // Checking for energy bug
+  stroke(150);
   line(-450, 0, 450, 0);
   float cMass = y1 + (r2 / 2) * cos(a2);
   line(-450, cMass, 450, cMass);
+  stroke(0);
   if (frameCount > 1) {
     if ((0 + cMass) >= 0) {
       //print(0 + cMass, "  -----  ", er, "\n");

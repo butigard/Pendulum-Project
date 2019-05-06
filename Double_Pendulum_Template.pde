@@ -8,16 +8,18 @@ float a1_v = 0;
 float a2_v = 0;
 float a1_a = 0;
 float a2_a = 0;
-float gravity = .15;
+float gravity = 0.2;
 float damp = 0.999;
 
 float px2 = -1;
 float py2 = -1;
 float cx, cy;
 
-float t = 0;
-float v = 0;
+float k = 0;
+float p = 0;
 float totE = 0;
+
+boolean er = false;
 
 PGraphics canvas;
 
@@ -31,8 +33,6 @@ void setup() {
   canvas.beginDraw();
   canvas.background(255);
   canvas.endDraw();
-  
-  frameRate(120);
 }
 
 void draw() {
@@ -40,7 +40,6 @@ void draw() {
   // equations for angular acceleration of both pendulums
   a1_a = (-1 * gravity * (2 * (m1 + m2)) * sin(a1) - m2 * gravity * sin(a1 - (2 * a2)) - 2 * sin(a1 - a2) * m2 * (pow(a2_v,2) * r2 + pow(a1_v,2) * r1 * cos(a1 - a2))) / (r1 * (2 * m1 + m2 - m2 * cos(2 * a1 - 2 * a2)));
   a2_a = (2 * sin(a1 - a2) * (pow(a1_v,2) * r1 * (m1 + m2) + gravity * (m1 + m2) * cos(a1) + pow(a2_v,2) * r2 * m2 * cos(a1-a2))) / (r2 * (2 * m1 + m2 - m2 * cos(2 * a1 - 2 * a2)));
-  
   
   
   
@@ -59,7 +58,7 @@ void draw() {
   float x2 = x1 + r2 * sin(a2);
   float y2 = y1 + r2 * cos(a2);
   
-  // creates lines between pendulums
+  // draws circles / lines between pendulums
   line(0,0,x1,y1);
   fill(0);
   ellipse(x1,y1,m1,m1);
@@ -68,30 +67,45 @@ void draw() {
   fill(0);
   ellipse(x2,y2,m2,m2);
   
+  // Draws energy bars
+  stroke(100);
+  line(-200,500,-200+k*2000,500);
+  line(-200,520,-200+p*0.05,520);
+  stroke(0);
+  //line(-200,480,-200+totE*0.05,480);
+  
+  
+  // Checking for energy bug
+  line(-450, 0, 450, 0);
+  float cMass = y1 + (r2 / 2) * cos(a2);
+  line(-450, cMass, 450, cMass);
+  if (frameCount > 1) {
+    if ((0 + cMass) >= 0) {
+      //print(0 + cMass, "  -----  ", er, "\n");
+    }
+    else {
+      er = true;
+      //print(0 + cMass, "  -----  ", er, "\n");
+    }
+  }
+    
+  
   // updates angular velocity and position *ORDER IMPORTANT*
-  a2_v += a2_a;
   a1_v += a1_a;
-  a2 += a2_v;
+  a2_v += a2_a; 
   a1 += a1_v;
+  a2 += a2_v;
   
   
   //a1_v *= damp;
   //a2_v *= damp;
   
-  
-  //Center Line - Used to track increase in energy
-  line(-450, 0, 450, 0);
-  float cM = y1 + (r2 / 2) * cos(a2);
-  line(-450, cM, 450, cM);
-  print(cM, "\n");
-  
-  
   // calculates total energy of system
-  t = 0.5 * m1 * pow(a1_v,2) + 0.5 * m2 * pow(a2_v,2);
-  v = -1 * m1 * gravity * y1 + m2 * gravity * y2;
-  totE = t + v;
+  k = 0.5 * m1 * pow(a1_v,2) + 0.5 * m2 * pow(a2_v,2);
+  p = m1 * gravity * (200 - y1) + m2 * gravity * (400 - y2);
+  totE = k + p;
   
-  //print(totE, "\n");
+  print(k, "\n");
   
   // implements canvas and tracking lines
   canvas.beginDraw();

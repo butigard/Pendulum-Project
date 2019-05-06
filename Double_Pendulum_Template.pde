@@ -18,6 +18,7 @@ float cx, cy;
 float k = 0;
 float p = 0;
 float totE = 0;
+float eY = 480;
 
 boolean er = false;
 
@@ -69,10 +70,10 @@ void draw() {
   
   // Draws energy bars
   stroke(100);
-  line(-200,500,-200+k*0.05,500);
-  line(-200,520,-200+p*0.05,520);
+  line(-200,eY+20,-200+k*0.05,eY+20);
+  line(-200,eY+40,-200+p*0.05,eY+40);
   stroke(0);
-  line(-200,480,-200+totE*0.05,480);
+  line(-200,eY,-200+totE*0.05,eY);
   
   
   // Checking for energy bug
@@ -116,7 +117,7 @@ void draw() {
   canvas.strokeWeight(4);
   canvas.stroke(0);
   if (frameCount > 1) {
-    canvas.line(px2, py2, x2,y2);
+    //canvas.line(px2, py2, x2,y2);
   }
   canvas.endDraw();
   

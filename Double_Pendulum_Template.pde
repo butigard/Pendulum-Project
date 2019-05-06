@@ -69,10 +69,10 @@ void draw() {
   
   // Draws energy bars
   stroke(100);
-  line(-200,500,-200+k*2000,500);
+  line(-200,500,-200+k*0.05,500);
   line(-200,520,-200+p*0.05,520);
   stroke(0);
-  //line(-200,480,-200+totE*0.05,480);
+  line(-200,480,-200+totE*0.05,480);
   
   
   // Checking for energy bug
@@ -103,11 +103,12 @@ void draw() {
   //a2_v *= damp;
   
   // calculates total energy of system
-  k = 0.5 * m1 * pow(a1_v,2) + 0.5 * m2 * pow(a2_v,2);
+  k = 0.5 * m1 * pow(a1_v * r1,2) + 0.5 * m2 * pow(a2_v * r2,2);
   p = m1 * gravity * (200 - y1) + m2 * gravity * (400 - y2);
+  //p = (m1 + m2) * gravity * (300 - cMass);
   totE = k + p;
   
-  print(k, "\n");
+  print(y2, "\n");
   
   // implements canvas and tracking lines
   canvas.beginDraw();

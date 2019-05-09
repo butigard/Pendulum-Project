@@ -1,0 +1,32 @@
+dPendulum p;
+PGraphics canvas;
+float cx;
+float cy;
+
+public void settings() {
+  size(900,600);
+}
+
+void setup() {
+  cx = width/2;
+  cy = height/10;
+  canvas = createGraphics(width, height);
+  canvas.beginDraw();
+  canvas.background(255);
+  canvas.endDraw();
+  
+  p = new dPendulum(new PVector(cx, cy), 200, 200, 40, 40);
+}
+
+void draw() {
+  background(255);
+  p.go();
+}
+
+void mousePressed() {
+p.clicked(mouseX,mouseY);
+}
+
+void mouseReleased() {
+p.stopDragging();
+}

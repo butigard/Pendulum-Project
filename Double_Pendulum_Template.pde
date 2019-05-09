@@ -20,6 +20,9 @@ float p = 0;
 float totE = 0;
 float eY = 480;
 
+float tUpdate = 30;
+float tInterval = 60;
+
 boolean er = false;
 
 PGraphics canvas;

@@ -2,9 +2,14 @@ dPendulum p;
 PGraphics canvas;
 float cx;
 float cy;
+float r1 = 200;
+float r2 = 200;
+float m1 = 40;
+float m2 = 40;
+float gravity = 0.4;
 
 public void settings() {
-  size(900,600);
+  size(900,900);
 }
 
 void setup() {
@@ -15,7 +20,8 @@ void setup() {
   canvas.background(255);
   canvas.endDraw();
   
-  p = new dPendulum(new PVector(cx, cy), 200, 200, 40, 40);
+  
+  p = new dPendulum(new PVector(cx, cy), r1, r2, m1, m2, gravity);
 }
 
 void draw() {

@@ -1,0 +1,31 @@
+class Energy {
+  float k;
+  float p;
+  float totE;
+  PVector ePosition;
+
+
+
+  Energy(PVector ePosition_){
+    ePosition = ePosition_;
+    
+  }
+  
+  void update(float a1_v, float a2_v, float y1, float y2) {
+    
+    k = 0.5 * m1 * pow(a1_v * r1,2) + 0.5 * m2 * pow(a2_v * r2,2);
+    p = m1 * gravity * (r1 - (y1-cy)) + m2 * gravity * ((r1+r2) - (y2-cy));
+    
+    totE = k + p;
+    
+  }
+  
+  
+  void display() {
+    stroke(100);
+    line(ePosition.x,ePosition.y + 20,ePosition.x + k * 0.08,ePosition.y + 20);
+    line(ePosition.x,ePosition.y + 40,ePosition.x + p * 0.08,ePosition.y + 40);
+    stroke(0);
+    line(ePosition.x,ePosition.y,ePosition.x + totE * 0.08,ePosition.y);
+  }
+}

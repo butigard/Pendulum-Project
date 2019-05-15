@@ -96,15 +96,19 @@ class dPendulum {
       tx2 = r2*sin(a2);
       ty2 = r2*cos(a2);
       
-      x1 = d.rungeKutta(0, tx1, 40, 40);
       
-      print(x1, "\n");
+      x1 = d.rungeKutta(0, tx1, 1, 1/uRate);
+      y1 = d.rungeKutta(0, ty1, 1, 1/uRate);
+      x2 = d.rungeKutta(0, tx2, 1, 1/uRate);
+      y2 = d.rungeKutta(0, ty2, 1, 1/uRate);
+      
+      print(x1, "----", tx1, "\n");
       
       // pendulum 1
-      position1.set(r1*sin(a1), r1*cos(a1), 0);
+      position1.set(x1, y1, 0);
       position1.add(origin);
       //pendulum 2
-      position2.set(r2*sin(a2), r2*cos(a2), 0);
+      position2.set(x2, y2, 0);
       position2.add(position1);
       
     

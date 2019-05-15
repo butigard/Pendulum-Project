@@ -3,15 +3,15 @@ PGraphics canvas;
 float cx;
 float cy;
 float a1 = PI/2;
-float a2 = PI/4;
+float a2 = PI/2;
 float r1 = 200;
 float r2 = 200;
 float m1 = 40;
 float m2 = 40;
 float gravity = 0.4;
 
-float fRate = 20;
-float uRate = 20;
+int fRate = 20;
+int uRate = 20;
 
 public void settings() {
   size(900,900);

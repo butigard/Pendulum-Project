@@ -9,6 +9,10 @@ class dPendulum {
   float m2;
   float r1;
   float r2;
+  float x1;
+  float y1;
+  float x2;
+  float y2;
   float a1;
   float a2;
   float a1_v;
@@ -18,16 +22,30 @@ class dPendulum {
   float ballr;
   float damp;
   float gravity;
+  
   Energy e;
+  // location of energy bars
   float ex;
   float ey;
  
+  // used for path tracing
+  float px2;
+  float py2;
+  
+  // temporary x1, x2, y1, y2
+  float tx1;
+  float tx2;
+  float ty1;
+  float ty2;
+  
+  differential d;
+  
   
   boolean dragging1 = false;
   boolean dragging2 = false;
   
   
-  dPendulum(PVector origin_, float r_, float r2_, float m1_, float m2_, float gravity_) {
+  dPendulum(PVector origin_, float r_, float r2_, float m1_, float m2_, float gravity_, float a1_, float a2_) {
     origin = origin_;
     position1 = new PVector();
     position2 = new PVector();
@@ -38,17 +56,18 @@ class dPendulum {
     ballr = 48.0;
     gravity = gravity_;
     
-    a1 = PI/4;
-    a2 = PI/4;
+    a1 = a1_;
+    a2 = a2_;
     a1_v = 0;
     a1_a = 0;
     a2_v = 0;
     a2_a = 0;
     damp = 0.995;
     
-    ex = width/2 - 100;
+    ex = 100;
     ey = 680;
     e = new Energy(new PVector(ex, ey));
+    d = new differential();
     
     
   }
@@ -61,33 +80,67 @@ class dPendulum {
   
   void update() {
     if(!dragging1 && !dragging2) {
+      // calculate acceleration
       a1_a = (-1 * gravity * (2 * (m1 + m2)) * sin(a1) - m2 * gravity * sin(a1 - (2 * a2)) - 2 * sin(a1 - a2) * m2 * (pow(a2_v,2) * r2 + pow(a1_v,2) * r1 * cos(a1 - a2))) / (r1 * (2 * m1 + m2 - m2 * cos(2 * a1 - 2 * a2)));
       a2_a = (2 * sin(a1 - a2) * (pow(a1_v,2) * r1 * (m1 + m2) + gravity * (m1 + m2) * cos(a1) + pow(a2_v,2) * r2 * m2 * cos(a1-a2))) / (r2 * (2 * m1 + m2 - m2 * cos(2 * a1 - 2 * a2)));
+      // calculate velocity
       a1_v += a1_a;
       a2_v += a2_a;
+      // calculate angle
       a1 += a1_v;
       a2 += a2_v;
       
+      // calculate position
+      tx1 = r1*sin(a1);
+      ty1 = r1*cos(a1);
+      tx2 = r2*sin(a2);
+      ty2 = r2*cos(a2);
+      
+      x1 = d.rungeKutta(0, tx1, 40, 40);
+      
+      print(x1, "\n");
+      
+      // pendulum 1
+      position1.set(r1*sin(a1), r1*cos(a1), 0);
+      position1.add(origin);
+      //pendulum 2
+      position2.set(r2*sin(a2), r2*cos(a2), 0);
+      position2.add(position1);
+      
+    
       e.update(a1_v, a2_v, position1.y, position2.y);
     }
   }
   
   void display() {
-    position1.set(r1*sin(a1), r1*cos(a1), 0);
-    position1.add(origin);
-    position2.set(r2*sin(a2), r2*cos(a2), 0);
-    position2.add(position1);
+    
+    image(canvas,0,0);
     stroke(0);
     strokeWeight(2);
+  
+    
     // Draw the arm
     line(origin.x, origin.y, position1.x, position1.y);
     line(position1.x, position1.y, position2.x, position2.y);
     ellipseMode(CENTER);
     fill(175);
     if (dragging1 || dragging2) fill(0);
+    
     // Draw the ball
     ellipse(position1.x, position1.y, ballr, ballr);
     ellipse(position2.x, position2.y, ballr, ballr);
+    
+    // Trace path
+    canvas.beginDraw();
+    canvas.strokeWeight(4);
+    canvas.stroke(0);
+    if (frameCount > 1) {
+      canvas.line(px2, py2, position2.x, position2.y);
+    }
+    canvas.endDraw();
+    
+    px2 = position2.x;
+    py2 = position2.y;
     
     e.display();
   }
@@ -117,10 +170,16 @@ class dPendulum {
     if (dragging1) {
       PVector diff = PVector.sub(origin, new PVector(mouseX, mouseY));
       a1 = atan2(-1 * diff.y, diff.x) - radians(90);
+      position1.set(r1*sin(a1), r1*cos(a1), 0);
+      position1.add(origin);
+      position2.set(r2*sin(a2), r2*cos(a2), 0);
+      position2.add(position1);
     }
     if (dragging2) {
       PVector diff = PVector.sub(position1, new PVector(mouseX, mouseY));
       a2 = atan2(-1 * diff.y, diff.x) - radians(90);
+      position2.set(r2*sin(a2), r2*cos(a2), 0);
+      position2.add(position1);
     }
   }
   

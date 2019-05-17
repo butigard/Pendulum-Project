@@ -32,11 +32,9 @@ class dPendulum {
   float px2;
   float py2;
   
-  // temporary x1, x2, y1, y2
-  float tx1;
-  float tx2;
-  float ty1;
-  float ty2;
+  // temporary a1_a & a2_a
+  float ta1_a;
+  float ta2_a;
   
   differential d;
   
@@ -81,8 +79,13 @@ class dPendulum {
   void update() {
     if(!dragging1 && !dragging2) {
       // calculate acceleration
-      a1_a = (-1 * gravity * (2 * (m1 + m2)) * sin(a1) - m2 * gravity * sin(a1 - (2 * a2)) - 2 * sin(a1 - a2) * m2 * (pow(a2_v,2) * r2 + pow(a1_v,2) * r1 * cos(a1 - a2))) / (r1 * (2 * m1 + m2 - m2 * cos(2 * a1 - 2 * a2)));
-      a2_a = (2 * sin(a1 - a2) * (pow(a1_v,2) * r1 * (m1 + m2) + gravity * (m1 + m2) * cos(a1) + pow(a2_v,2) * r2 * m2 * cos(a1-a2))) / (r2 * (2 * m1 + m2 - m2 * cos(2 * a1 - 2 * a2)));
+      ta1_a = (-1 * gravity * (2 * (m1 + m2)) * sin(a1) - m2 * gravity * sin(a1 - (2 * a2)) - 2 * sin(a1 - a2) * m2 * (pow(a2_v,2) * r2 + pow(a1_v,2) * r1 * cos(a1 - a2))) / (r1 * (2 * m1 + m2 - m2 * cos(2 * a1 - 2 * a2)));
+      ta2_a = (2 * sin(a1 - a2) * (pow(a1_v,2) * r1 * (m1 + m2) + gravity * (m1 + m2) * cos(a1) + pow(a2_v,2) * r2 * m2 * cos(a1-a2))) / (r2 * (2 * m1 + m2 - m2 * cos(2 * a1 - 2 * a2)));
+      
+      //Runge-Kutta Implementation
+      a1_a = d.rungeKutta(0, ta1_a, 1, uRate);
+      a2_a = d.rungeKutta(0, ta2_a, 1, uRate);
+      
       // calculate velocity
       a1_v += a1_a;
       a2_v += a2_a;
@@ -91,18 +94,13 @@ class dPendulum {
       a2 += a2_v;
       
       // calculate position
-      tx1 = r1*sin(a1);
-      ty1 = r1*cos(a1);
-      tx2 = r2*sin(a2);
-      ty2 = r2*cos(a2);
+      x1 = r1*sin(a1);
+      y1 = r1*cos(a1);
+      x2 = r2*sin(a2);
+      y2 = r2*cos(a2);
       
       
-      x1 = d.rungeKutta(0, tx1, 1, 1/uRate);
-      y1 = d.rungeKutta(0, ty1, 1, 1/uRate);
-      x2 = d.rungeKutta(0, tx2, 1, 1/uRate);
-      y2 = d.rungeKutta(0, ty2, 1, 1/uRate);
-      
-      print(x1, "----", tx1, "\n");
+      print(ta1_a, "----", a1_a, "\n");
       
       // pendulum 1
       position1.set(x1, y1, 0);

@@ -9,7 +9,7 @@ class differential
       
     // Finds value of y for a given x using step size h 
     // and initial value y0 at x0. 
-    float rungeKutta(int x0, float y0, int x, float h) 
+    float rungeKutta(int x0, float y0, int x, int h) 
     { 
         differential d1 = new differential(); 
         // Count number of iterations using step size or 

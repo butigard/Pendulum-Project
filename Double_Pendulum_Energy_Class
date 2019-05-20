@@ -3,7 +3,8 @@ class Energy {
   float p;
   float totE;
   PVector ePosition;
-
+  
+  float dmp = 0.001;
 
 
   Energy(PVector ePosition_){
@@ -23,9 +24,9 @@ class Energy {
   
   void display() {
     stroke(100);
-    line(ePosition.x,ePosition.y + 20,ePosition.x + k * 0.03,ePosition.y + 20);
-    line(ePosition.x,ePosition.y + 40,ePosition.x + p * 0.03,ePosition.y + 40);
+    line(ePosition.x,ePosition.y + 20,ePosition.x + k * dmp,ePosition.y + 20);
+    line(ePosition.x,ePosition.y + 40,ePosition.x + p * dmp,ePosition.y + 40);
     stroke(0);
-    line(ePosition.x,ePosition.y,ePosition.x + totE * 0.03,ePosition.y);
+    line(ePosition.x,ePosition.y,ePosition.x + totE * dmp,ePosition.y);
   }
 }

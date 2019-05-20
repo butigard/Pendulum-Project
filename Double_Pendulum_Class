@@ -83,15 +83,15 @@ class dPendulum {
       ta2_a = (2 * sin(a1 - a2) * (pow(a1_v,2) * r1 * (m1 + m2) + gravity * (m1 + m2) * cos(a1) + pow(a2_v,2) * r2 * m2 * cos(a1-a2))) / (r2 * (2 * m1 + m2 - m2 * cos(2 * a1 - 2 * a2)));
       
       //Runge-Kutta Implementation
-      a1_a = d.rungeKutta(0, ta1_a, 1, uRate);
-      a2_a = d.rungeKutta(0, ta2_a, 1, uRate);
+      a1_a = d.rungeKutta(t, ta1_a, t+dt, fRate);
+      a2_a = d.rungeKutta(t, ta2_a, t+dt, fRate);
       
       // calculate velocity
-      a1_v += a1_a;
-      a2_v += a2_a;
+      a1_v += a1_a * dt;
+      a2_v += a2_a * dt;
       // calculate angle
-      a1 += a1_v;
-      a2 += a2_v;
+      a1 += a1_v * dt;
+      a2 += a2_v * dt;
       
       // calculate position
       x1 = r1*sin(a1);
@@ -100,7 +100,8 @@ class dPendulum {
       y2 = r2*cos(a2);
       
       
-      print(ta1_a, "----", a1_a, "\n");
+      //print(ta1_a, "----", a1_a, "\n");
+      print(t, "\n");
       
       // pendulum 1
       position1.set(x1, y1, 0);
@@ -109,7 +110,7 @@ class dPendulum {
       position2.set(x2, y2, 0);
       position2.add(position1);
       
-    
+      t += dt;
       e.update(a1_v, a2_v, position1.y, position2.y);
     }
   }

@@ -60,7 +60,7 @@ class dPendulum {
     a1_a = 0;
     a2_v = 0;
     a2_a = 0;
-    damp = 0.995;
+    damp = 0.595;
     
     ex = 100;
     ey = 680;

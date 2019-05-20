@@ -4,7 +4,7 @@ class differential
 { 
     float dydx(float x, float y) 
     { 
-        return ((x - y) / 2); 
+        return ((-1 * gravity * (2 * (m1 + m2)) * sin(a1) - m2 * gravity * sin(a1 - (2 * a2)) - 2 * sin(a1 - a2) * m2 * (pow(a2_v,2) * r2 + pow(a1_v,2) * r1 * cos(a1 - a2))) / (r1 * (2 * m1 + m2 - m2 * cos(2 * a1 - 2 * a2)));
     } 
       
     // Finds value of y for a given x using step size h 

@@ -2,16 +2,19 @@ dPendulum p;
 PGraphics canvas;
 float cx;
 float cy;
+float t = 0;
+float dt = .2;
+int iter = 0;
 float a1 = PI/2;
 float a2 = PI/2;
 float r1 = 200;
 float r2 = 200;
 float m1 = 40;
 float m2 = 40;
-float gravity = 0.4;
+float gravity = 9.81;
 
-int fRate = 20;
-int uRate = 20;
+int fRate = 45;
+int uRate = 45;
 
 public void settings() {
   size(900,900);

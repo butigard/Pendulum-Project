@@ -2,42 +2,59 @@
 
 class differential 
 { 
-    float dydx(float x, float y) 
+    void derivs(float xin, float yin[], float dydx[]) 
     { 
-        return ((-1 * gravity * (2 * (m1 + m2)) * sin(a1) - m2 * gravity * sin(a1 - (2 * a2)) - 2 * sin(a1 - a2) * m2 * (pow(a2_v,2) * r2 + pow(a1_v,2) * r1 * cos(a1 - a2))) / (r1 * (2 * m1 + m2 - m2 * cos(2 * a1 - 2 * a2)));
+        dydx[0] = yin[1];
+        dydx[1] = ((-1 * gravity * (2 * (m1 + m2)) * sin(yin[0]) - m2 * gravity * sin(yin[0] - (2 * yin[2])) - 2 * sin(yin[0] - yin[2]) * m2 * (pow(yin[3],2) * r2 + pow(yin[1],2) * r1 * cos(yin[0] - yin[2]))) / (r1 * (2 * m1 + m2 - m2 * cos(2 * yin[0] - 2 * yin[2]))));
+        dydx[2] = yin[3];
+        dydx[3] = (2 * sin(yin[0] - yin[2]) * (pow(yin[1],2) * r1 * (m1 + m2) + gravity * (m1 + m2) * cos(yin[0]) + pow(yin[3],2) * r2 * m2 * cos(yin[0]-yin[2]))) / (r2 * (2 * m1 + m2 - m2 * cos(2 * yin[0] - 2 * yin[2])));
+        return;
     } 
       
     // Finds value of y for a given x using step size h 
     // and initial value y0 at x0. 
-    float rungeKutta(float x0, float y0, float x, float h) 
+    void rungeKutta(float xin, float yin[], float yout[], float h) 
     { 
         differential d1 = new differential(); 
-        // Count number of iterations using step size or 
-        // step height h 
-        int n = (int)((x - x0) / h); 
+        
   
-        float k1, k2, k3, k4, k5; 
-  
-        // Iterate for number of iterations 
-        float y = y0; 
-        for (int i = 1; i <= n; i++)  
-        { 
-            // Apply Runge Kutta Formulas to find 
-            // next value of y 
-            k1 = h * (d1.dydx(x0, y)); 
-            k2 = h * (d1.dydx(x0 + 0.5 * h, y + 0.5 * k1)); 
-            k3 = h * (d1.dydx(x0 + 0.5 * h, y + 0.5 * k2)); 
-            k4 = h * (d1.dydx(x0 + h, y + k3)); 
-  
-            // Update next value of y 
-            y = y + (1.0 / 6.0) * (k1 + 2 * k2 + 2 * k3 + k4);
-              
-            // Update next value of x 
-            x0 = x0 + h; 
-        } 
-        return y; 
-    } 
+        int i;
+        float hh, xh, dydx[], dydxt[], yt[], k1[], k2[], k3[], k4[];
+        
+        hh = 0.5*h;
+        xh = xin + hh; 
+        
+        derivs(xin, yin, dydx); /* first step */
+        for (i = 0; i < 3; i++) 
+        {
+          k1[i] = h*dydx[i];
+          yt[i] = yin[i] + 0.5*k1[i];
+        }
+      
+        derivs(xh, yt, dydxt); /* second step */ 
+        for (i = 0; i < 3; i++)
+        {
+          k2[i] = h*dydxt[i];
+          yt[i] = yin[i] + 0.5*k2[i];
+        }   
+      
+        derivs(xh, yt, dydxt); /* third step */
+        for (i = 0; i < 3; i++)
+        {
+          k3[i] = h*dydxt[i];
+          yt[i] = yin[i] + k3[i];
+        }
+      
+        derivs(xin + h, yt, dydxt); /* fourth step */
+        for (i = 0; i < 3; i++)
+        {
+          k4[i] = h*dydxt[i];
+          yout[i] = yin[i] + k1[i]/6. + k2[i]/3. + k3[i]/3. + k4[i]/6.;
+        }
+       
+        return;
+      
+      }
       
 } 
   
-// This code is contributed by Prateek Bhindwar

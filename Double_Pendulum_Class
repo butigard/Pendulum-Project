@@ -9,19 +9,12 @@ class dPendulum {
   float m2;
   float r1;
   float r2;
-  float x1;
-  float y1;
-  float x2;
-  float y2;
-  float a1;
-  float a2;
-  float a1_v;
-  float a2_v;
   float a1_a;
   float a2_a;
   float ballr;
   float damp;
   float gravity;
+  float h;
   
   Energy e;
   // location of energy bars
@@ -38,9 +31,23 @@ class dPendulum {
   
   differential d;
   
+  // Arrays
+  float t[];
+  float x1[];
+  float x2[];
+  float y1[];
+  float y2[];
+  float a1[];
+  float a2[];
+  float a1_v[];
+  float a2_v[];
+  float yin[];
+  float yout[];
+  
   
   boolean dragging1 = false;
   boolean dragging2 = false;
+  
   
   
   dPendulum(PVector origin_, float r_, float r2_, float m1_, float m2_, float gravity_, float a1_, float a2_) {
@@ -54,13 +61,19 @@ class dPendulum {
     ballr = 48.0;
     gravity = gravity_;
     
-    a1 = a1_;
-    a2 = a2_;
-    a1_v = 0;
+    a1[0] = a1_;
+    a2[0] = a2_;
+    a1_v[0] = 0;
     a1_a = 0;
-    a2_v = 0;
+    a2_v[0] = 0;
     a2_a = 0;
     damp = 0.595;
+    
+    h = (TMAX - TMIN) / (NSTEP - 1.0);
+    for (i = 0; i < NSTEP; i++){
+      t[i] = TMIN + h*i;
+    }
+    
     
     ex = 100;
     ey = 680;
@@ -78,40 +91,57 @@ class dPendulum {
   
   void update() {
     if(!dragging1 && !dragging2) {
+      
+      
+      for (i = 0; i < NSTEP - 1; i++)
+      { 
+        yin[0] = a1[i];
+        yin[1] = a1_v[i];
+        yin[2] = a2[i];
+        yin[3] = a2_v[i];
+        d.rungeKutta(t[i], yin, yout, h);
+        a1[i+1] = yout[0];
+        a1_v[i+1] = yout[1];
+        a2[i+1] = yout[2];
+        a2_v[i+1] = yout[3];
+        
+        // calculate position
+        x1[i] = r1*sin(a1[i]);
+        y1[i] = r1*cos(a1[i]);
+        x2[i] = r2*sin(a2[i]);
+        y2[i] = r2*cos(a2[i]);
+        
+        // pendulum 1
+        position1.set(x1[i], y1[i], 0);
+        position1.add(origin);
+        //pendulum 2
+        position2.set(x2[i], y2[i], 0);
+        position2.add(position1);
+        
+        e.update(a1_v[i], a2_v[i], position1.y, position2.y);
+      }
+      
+      
+      
       // calculate acceleration
-      ta1_a = (-1 * gravity * (2 * (m1 + m2)) * sin(a1) - m2 * gravity * sin(a1 - (2 * a2)) - 2 * sin(a1 - a2) * m2 * (pow(a2_v,2) * r2 + pow(a1_v,2) * r1 * cos(a1 - a2))) / (r1 * (2 * m1 + m2 - m2 * cos(2 * a1 - 2 * a2)));
-      ta2_a = (2 * sin(a1 - a2) * (pow(a1_v,2) * r1 * (m1 + m2) + gravity * (m1 + m2) * cos(a1) + pow(a2_v,2) * r2 * m2 * cos(a1-a2))) / (r2 * (2 * m1 + m2 - m2 * cos(2 * a1 - 2 * a2)));
+      //ta1_a = (-1 * gravity * (2 * (m1 + m2)) * sin(a1) - m2 * gravity * sin(a1 - (2 * a2)) - 2 * sin(a1 - a2) * m2 * (pow(a2_v,2) * r2 + pow(a1_v,2) * r1 * cos(a1 - a2))) / (r1 * (2 * m1 + m2 - m2 * cos(2 * a1 - 2 * a2)));
+      //ta2_a = (2 * sin(a1 - a2) * (pow(a1_v,2) * r1 * (m1 + m2) + gravity * (m1 + m2) * cos(a1) + pow(a2_v,2) * r2 * m2 * cos(a1-a2))) / (r2 * (2 * m1 + m2 - m2 * cos(2 * a1 - 2 * a2)));
       
       //Runge-Kutta Implementation
-      a1_a = d.rungeKutta(t, ta1_a, t+dt, fRate);
-      a2_a = d.rungeKutta(t, ta2_a, t+dt, fRate);
+      //a1_a = d.rungeKutta(0, ta1_a, 1, NSTEP);
+      //a2_a = d.rungeKutta(0, ta2_a, 1, NSTEP);
       
       // calculate velocity
-      a1_v += a1_a * dt;
-      a2_v += a2_a * dt;
+      //a1_v += a1_a;
+      //a2_v += a2_a;
       // calculate angle
-      a1 += a1_v * dt;
-      a2 += a2_v * dt;
+      //a1 += a1_v;
+      //a2 += a2_v;
       
-      // calculate position
-      x1 = r1*sin(a1);
-      y1 = r1*cos(a1);
-      x2 = r2*sin(a2);
-      y2 = r2*cos(a2);
       
       
       //print(ta1_a, "----", a1_a, "\n");
-      print(t, "\n");
       
-      // pendulum 1
-      position1.set(x1, y1, 0);
-      position1.add(origin);
-      //pendulum 2
-      position2.set(x2, y2, 0);
-      position2.add(position1);
-      
-      t += dt;
-      e.update(a1_v, a2_v, position1.y, position2.y);
     }
   }
   
@@ -162,8 +192,8 @@ class dPendulum {
 
     void stopDragging() {
     if (dragging1 || dragging2) {
-      a1_v = 0;
-      a2_v = 0;
+      a1_v[i] = 0;
+      a2_v[i] = 0;
       dragging1 = false;
       dragging2 = false;
     }
@@ -172,16 +202,16 @@ class dPendulum {
   void drag() {
     if (dragging1) {
       PVector diff = PVector.sub(origin, new PVector(mouseX, mouseY));
-      a1 = atan2(-1 * diff.y, diff.x) - radians(90);
-      position1.set(r1*sin(a1), r1*cos(a1), 0);
+      a1[i] = atan2(-1 * diff.y, diff.x) - radians(90);
+      position1.set(r1*sin(a1[i]), r1*cos(a1[i]), 0);
       position1.add(origin);
-      position2.set(r2*sin(a2), r2*cos(a2), 0);
+      position2.set(r2*sin(a2[i]), r2*cos(a2[i]), 0);
       position2.add(position1);
     }
     if (dragging2) {
       PVector diff = PVector.sub(position1, new PVector(mouseX, mouseY));
-      a2 = atan2(-1 * diff.y, diff.x) - radians(90);
-      position2.set(r2*sin(a2), r2*cos(a2), 0);
+      a2[i] = atan2(-1 * diff.y, diff.x) - radians(90);
+      position2.set(r2*sin(a2[i]), r2*cos(a2[i]), 0);
       position2.add(position1);
     }
   }

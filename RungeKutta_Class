@@ -15,38 +15,44 @@ class differential
     // and initial value y0 at x0. 
     void rungeKutta(float xin, float yin[], float yout[], float h) 
     { 
-        differential d1 = new differential(); 
-        
   
         int i;
-        float hh, xh, dydx[], dydxt[], yt[], k1[], k2[], k3[], k4[];
+        float hh, xh;
+        //, dydx[], dydxt[], yt[], k1[], k2[], k3[], k4[];
+        float[] dydx = new float[4];
+        float[] dydxt = new float[4];
+        float[] yt = new float[NSTEP];
+        float[] k1 = new float[NSTEP];
+        float[] k2 = new float[NSTEP];
+        float[] k3 = new float[NSTEP];
+        float[] k4 = new float[NSTEP];
         
         hh = 0.5*h;
         xh = xin + hh; 
         
         derivs(xin, yin, dydx); /* first step */
-        for (i = 0; i < 3; i++) 
+        for (i = 0; i < 4; i++) 
         {
           k1[i] = h*dydx[i];
           yt[i] = yin[i] + 0.5*k1[i];
         }
       
         derivs(xh, yt, dydxt); /* second step */ 
-        for (i = 0; i < 3; i++)
+        for (i = 0; i < 4; i++)
         {
           k2[i] = h*dydxt[i];
           yt[i] = yin[i] + 0.5*k2[i];
         }   
       
         derivs(xh, yt, dydxt); /* third step */
-        for (i = 0; i < 3; i++)
+        for (i = 0; i < 4; i++)
         {
           k3[i] = h*dydxt[i];
           yt[i] = yin[i] + k3[i];
         }
       
         derivs(xin + h, yt, dydxt); /* fourth step */
-        for (i = 0; i < 3; i++)
+        for (i = 0; i < 4; i++)
         {
           k4[i] = h*dydxt[i];
           yout[i] = yin[i] + k1[i]/6. + k2[i]/3. + k3[i]/3. + k4[i]/6.;

@@ -32,17 +32,17 @@ class dPendulum {
   differential d;
   
   // Arrays
-  float t[];
-  float x1[];
-  float x2[];
-  float y1[];
-  float y2[];
-  float a1[];
-  float a2[];
-  float a1_v[];
-  float a2_v[];
-  float yin[];
-  float yout[];
+  float[] t = new float[NSTEP];
+  float[] x1 = new float[NSTEP];
+  float[] x2 = new float[NSTEP];
+  float[] y1 = new float[NSTEP];
+  float[] y2 = new float[NSTEP];
+  float[] a1 = new float[NSTEP];
+  float[] a2 = new float[NSTEP];
+  float[] a1_v = new float[NSTEP];
+  float[] a2_v = new float[NSTEP];
+  float[] yin = new float[NSTEP];
+  float[] yout = new float[NSTEP];
   
   
   boolean dragging1 = false;
@@ -105,11 +105,13 @@ class dPendulum {
         a2[i+1] = yout[2];
         a2_v[i+1] = yout[3];
         
+        print(i, "-------", yout[0], "\n");
+        
         // calculate position
-        x1[i] = r1*sin(a1[i]);
-        y1[i] = r1*cos(a1[i]);
-        x2[i] = r2*sin(a2[i]);
-        y2[i] = r2*cos(a2[i]);
+        x1[i+1] = r1*sin(a1[i]);
+        y1[i+1] = r1*cos(a1[i]);
+        x2[i+1] = r2*sin(a2[i]);
+        y2[i+1] = r2*cos(a2[i]);
         
         // pendulum 1
         position1.set(x1[i], y1[i], 0);

@@ -13,7 +13,7 @@ float gravity = 9.81;
 // Time Stuff
 float TMIN = 0;
 float TMAX = 10;
-int NSTEP = 1000;
+int NSTEP = 100;
 int i = 0;
 
 

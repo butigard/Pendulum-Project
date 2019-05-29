@@ -80,7 +80,7 @@ class dPendulum {
     
     
     ex = 100;
-    ey = 680;
+    ey = 100;
     e = new Energy(new PVector(ex, ey));
     d = new differential();
     
@@ -109,7 +109,7 @@ class dPendulum {
         a2 = yout[2];
         a2_v = yout[3];
         
-        print(i, "-------", yout[1], "\n");
+        //print(i, "-------", yout[1], "\n");
         
         // calculate position
         x1 = r1*sin(a1);
@@ -151,6 +151,9 @@ class dPendulum {
       
       //print(ta1_a, "----", a1_a, "\n");
       
+    }
+    else {
+      e.cmUpdate(position1.y, position2.y);
     }
   }
   

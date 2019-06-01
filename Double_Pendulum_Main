@@ -1,9 +1,10 @@
 dPendulum p;
+dPendulum p2;
 PGraphics canvas;
 float cx;
 float cy;
-float a10 = PI/2;
-float a20 = PI/2;
+float a10 = PI;
+float a20 = 0.999*PI;
 float r1 = 200;
 float r2 = 200;
 float m1 = 40;
@@ -32,17 +33,21 @@ void setup() {
   
   
   p = new dPendulum(new PVector(cx, cy), r1, r2, m1, m2, gravity, a10, a20);
+  p2 = new dPendulum(new PVector(cx, cy), r1, r2, m1, m2, gravity, a10, 1.001 * PI);
 }
 
 void draw() {
-  background(255);
+  image(canvas,0,0);
   p.go();
+  p2.go();
 }
 
 void mousePressed() {
 p.clicked(mouseX,mouseY);
+p2.clicked(mouseX,mouseY);
 }
 
 void mouseReleased() {
 p.stopDragging();
+p2.stopDragging();
 }

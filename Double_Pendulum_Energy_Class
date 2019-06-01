@@ -37,6 +37,7 @@ class Energy {
   
   void cmUpdate(float y1, float y2) {
     cmt = y2 + 0.5 * (y1 - y2);
+    e = 1;
   }
   
   
@@ -49,7 +50,7 @@ class Energy {
     line(ePosition.x,ePosition.y,ePosition.x + totE * dmp,ePosition.y);
     
     // center of mass bars
-    line(0, cmt, width, cmt);
-    line(0, cme, width, cme);
+    //line(0, cmt, width, cmt);
+    //line(0, cme, width, cme);
   }
 }

@@ -159,7 +159,7 @@ class dPendulum {
   
   void display() {
     
-    image(canvas,0,0);
+    
     stroke(0);
     strokeWeight(2);
   

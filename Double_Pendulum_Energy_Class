@@ -8,25 +8,33 @@ class Energy {
   
   float cmt, cme;
   float e = 1;
+  float mp;
 
   Energy(PVector ePosition_){
     ePosition = ePosition_;
     
+    
   }
   
-  void update(float a1_v, float a2_v, float y1, float y2) {
+  void update(float a1_v, float a2_v, float y1, float y2, float a1, float a2) {
+    cme = y2 + 0.5 * (y1 - y2);
     
     // calculate energy
-    k = 0.5 * m1 * pow(a1_v * r1,2) + 0.5 * m2 * pow(a2_v * r2,2);
+    //k = 0.5 * m1 * pow(a1_v*r1,2) + 0.5 * m2 * pow((a1_v*r1)+(a2_v*r2),2);
+    //p = m1 * gravity * (r1 - (y1-cy)) + m2 * gravity * ((r1+r2) - (y2-cy));
     p = m1 * gravity * (r1 - (y1-cy)) + m2 * gravity * ((r1+r2) - (y2-cy));
-    
+    if (frameCount < 2){
+      mp = p;
+    }
+    k = mp-p;
+    //print(k, "------", p, "\n");
     totE = k + p;
     
     // calculate center of mass bars
     if (frameCount < 2){
       cmt = y2 + 0.5 * (y1 - y2);
     }
-    cme = y2 + 0.5 * (y1 - y2);
+    
     
     if (cme < cmt){
       print("ERROR:", e, "\n");
@@ -37,17 +45,18 @@ class Energy {
   
   void cmUpdate(float y1, float y2) {
     cmt = y2 + 0.5 * (y1 - y2);
+    mp = m1 * gravity * (r1 - (y1-cy)) + m2 * gravity * ((r1+r2) - (y2-cy));;
     e = 1;
   }
   
   
   void display() {
     // energy bars
-    stroke(100);
-    line(ePosition.x,ePosition.y + 20,ePosition.x + k * dmp,ePosition.y + 20);
-    line(ePosition.x,ePosition.y + 40,ePosition.x + p * dmp,ePosition.y + 40);
+    stroke(200);
+    line(ePosition.x,ePosition.y,ePosition.x + p * dmp,ePosition.y);
     stroke(0);
-    line(ePosition.x,ePosition.y,ePosition.x + totE * dmp,ePosition.y);
+    line(ePosition.x+totE*dmp,ePosition.y,ePosition.x+(totE*dmp)-(k*dmp),ePosition.y);
+    //line(ePosition.x,ePosition.y,ePosition.x + totE * dmp,ePosition.y);
     
     // center of mass bars
     //line(0, cmt, width, cmt);
